@@ -6,27 +6,22 @@ using System.Net.Http.Headers;
 
 namespace Simple_CRUD_Project.Controllers
 {
-    [Produces("application/json")]
-    [Route("[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class PostController : Controller
+    public class PostController : ControllerBase
     {
-        MainDBContext _context = new MainDBContext();
-        //private HttpClient client;
+        private readonly MainDBContext _context;
 
-        //public PostController()
-        //{
-        //    client = new HttpClient();
-        //    client.DefaultRequestHeaders.Clear();
-        //    client.DefaultRequestHeaders.Accept.Clear();
-        //    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        //}
+        public PostController(MainDBContext context)
+        {
+            _context = context;
+        }
 
         #region User Posting
 
         #region Create
 
-        [HttpPost]
+        [HttpPost("CreatePost")]
         public IActionResult CreatePost([FromBody] TblPost post)
         {
             if (!ModelState.IsValid)
@@ -74,7 +69,7 @@ namespace Simple_CRUD_Project.Controllers
 
         #region Update
 
-        [HttpPut("{postId}")]
+        [HttpPut("UpdatePost/{postId}")]
         public IActionResult UpdatePost(string postId, TblPost post)
         {
             if (!ModelState.IsValid)
@@ -120,7 +115,7 @@ namespace Simple_CRUD_Project.Controllers
 
         #region Delete
 
-        [HttpDelete("{postId}")]
+        [HttpDelete("DeletePost/{postId}")]
         public IActionResult DeletePost(string postId)
         {
             try
@@ -156,7 +151,7 @@ namespace Simple_CRUD_Project.Controllers
 
         #region Create
 
-        [HttpPost]
+        [HttpPost("CreateComment")]
         public IActionResult CreateComment([FromBody] TblComment comment)
         {
             if (!ModelState.IsValid)
@@ -207,7 +202,7 @@ namespace Simple_CRUD_Project.Controllers
 
         #region Update
 
-        [HttpPut("{commentId}")]
+        [HttpPut("UpdateComment/{commentId}")]
         public IActionResult UpdateComment(string commentId, TblComment comment)
         {
             if (!ModelState.IsValid)
@@ -248,7 +243,7 @@ namespace Simple_CRUD_Project.Controllers
 
         #region Delete
 
-        [HttpDelete("{commentId}")]
+        [HttpDelete("DeleteComment/{commentId}")]
         public IActionResult DeleteComment(string commentId)
         {
             try
@@ -283,7 +278,7 @@ namespace Simple_CRUD_Project.Controllers
 
         #region Get
 
-        [HttpGet("{userId}")]
+        [HttpGet("GetPostsByUserId/{userId}")]
         public async Task<ActionResult<IEnumerable<UserPostViewModel>>> GetPostsByUserId(string userId)
         {
             try

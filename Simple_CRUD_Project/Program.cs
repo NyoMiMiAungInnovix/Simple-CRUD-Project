@@ -1,4 +1,7 @@
 using Microsoft.OpenApi.Models;
+using Simple_CRUD_Project.Abstractions;
+using Simple_CRUD_Project.Models;
+using Simple_CRUD_Project.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +11,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<MainDBContext>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<IFileUpload, FileUpload>();
 
 builder.Services.AddSwaggerGen(c =>
 {

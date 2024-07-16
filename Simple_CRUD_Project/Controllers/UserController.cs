@@ -1,31 +1,28 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Simple_CRUD_Project.Abstractions;
 using Simple_CRUD_Project.Models;
 using System.Net.Http.Headers;
 
 namespace Simple_CRUD_Project.Controllers
 {
-    [Produces("application/json")]
-    [Route("[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
-        MainDBContext _context = new MainDBContext();
-        private HttpClient client;
+        private readonly MainDBContext _context;
 
-        public UserController()
+        public UserController(MainDBContext context)
         {
-            client = new HttpClient();
-            client.DefaultRequestHeaders.Clear();
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _context = context;
         }
 
         #region Create
 
-        [HttpPost]
+        [HttpPost("CreateUser")]
         public IActionResult CreateUser([FromBody] TblUser user)
         {
             if (!ModelState.IsValid)
@@ -77,7 +74,7 @@ namespace Simple_CRUD_Project.Controllers
 
         #region Update
 
-        [HttpPut("{userId}")]
+        [HttpPut("UpdateUser/{userId}")]
         public IActionResult UpdateUser(string userId, [FromBody] TblUser user)
         {
             if (!ModelState.IsValid)
@@ -143,7 +140,7 @@ namespace Simple_CRUD_Project.Controllers
         #region Get
 
         // GET: api/users
-        [HttpGet]
+        [HttpGet("GetUsers")]
         public async Task<ActionResult<IEnumerable<TblUser>>> GetUsers()
         {
             try

@@ -20,6 +20,8 @@ namespace Simple_CRUD_Project.Models
 
         public virtual DbSet<TblUser> TblUsers { get; set; }
 
+        public virtual DbSet<TblFiledetail> TblFiledetails { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -89,10 +91,7 @@ namespace Simple_CRUD_Project.Models
                     .IsUnicode(false)
                     .HasColumnName("email");
                 entity.Property(e => e.IsActive).HasColumnName("is_active");
-                entity.Property(e => e.Password)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("password");
+                entity.Property(e => e.Password).IsUnicode(false);
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnType("datetime")
                     .HasColumnName("updated_at");
@@ -100,6 +99,24 @@ namespace Simple_CRUD_Project.Models
                     .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("username");
+            });
+
+            modelBuilder.Entity<TblFiledetail>(entity =>
+            {
+                entity.ToTable("Tbl_filedetails");
+
+                entity.Property(e => e.Id)
+                    .ValueGeneratedNever()
+                    .HasColumnName("id");
+                entity.Property(e => e.FileData).HasColumnName("file_data");
+                entity.Property(e => e.FileName)
+                    .HasMaxLength(300)
+                    .HasColumnName("file_name");
+                entity.Property(e => e.FileSize).HasColumnName("file_size");
+                entity.Property(e => e.FileType).HasColumnName("file_type");
+                entity.Property(e => e.UploadedAt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("uploaded_at");
             });
 
         }
