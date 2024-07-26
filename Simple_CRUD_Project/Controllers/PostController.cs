@@ -59,7 +59,6 @@ namespace Simple_CRUD_Project.Controllers
         void SaveUserPost(TblPost post)
         {
             post.Id = Guid.NewGuid();
-            post.CreatedAt = DateTime.Now;
             post.IsDeleted = false;
             _context.Entry(post).State = EntityState.Added;
             _context.SaveChanges();
@@ -99,7 +98,6 @@ namespace Simple_CRUD_Project.Controllers
                 { 
                     postModel.ImageUrl = post.ImageUrl;
                 }
-                postModel.UpdatedAt = DateTime.Now;
                 _context.Entry(postModel).State = EntityState.Modified;
                 _context.SaveChanges();
 
@@ -192,7 +190,6 @@ namespace Simple_CRUD_Project.Controllers
         void SaveUserComment(TblComment comment)
         {
             comment.Id = Guid.NewGuid();
-            comment.CreatedAt = DateTime.Now;
             comment.IsDeleted = false;
             _context.Entry(comment).State = EntityState.Added;
             _context.SaveChanges();
@@ -227,7 +224,6 @@ namespace Simple_CRUD_Project.Controllers
                     return NotFound();
                 }
                 commentModel.Comment = comment.Comment;
-                commentModel.UpdatedAt = DateTime.Now;
                 _context.Entry(commentModel).State = EntityState.Modified;
                 _context.SaveChanges();
 

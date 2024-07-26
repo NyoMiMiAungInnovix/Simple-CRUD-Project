@@ -64,7 +64,6 @@ namespace Simple_CRUD_Project.Controllers
         void SaveUserData(TblUser user)
         {
             user.Id = Guid.NewGuid();
-            user.CreatedAt = DateTime.Now;
             user.IsActive = true;
             _context.Entry(user).State = EntityState.Added;
             _context.SaveChanges();
@@ -120,8 +119,7 @@ namespace Simple_CRUD_Project.Controllers
                     {
                         userModel.IsActive = user.IsActive;
                     }
-                    userModel.UpdatedAt = DateTime.Now;
-                    _context.Entry(userModel).State = EntityState.Modified;
+                    _context.Update(userModel);
                     _context.SaveChanges();
 
                     #endregion                  

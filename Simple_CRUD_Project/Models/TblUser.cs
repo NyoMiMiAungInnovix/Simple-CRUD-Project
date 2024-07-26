@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Simple_CRUD_Project.Common.Entities;
 
 namespace Simple_CRUD_Project.Models;
 
-public partial class TblUser
+public partial class TblUser : BaseEntity
 {
     public Guid Id { get; set; }
 
@@ -14,10 +13,6 @@ public partial class TblUser
     public string? Email { get; set; }
 
     public string? ContactNo { get; set; }
-
-    public DateTime? CreatedAt { get; set; }
-
-    public DateTime? UpdatedAt { get; set; }
 
     public bool? IsActive { get; set; }
 }

@@ -1,4 +1,5 @@
-using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Simple_CRUD_Project.Abstractions;
 using Simple_CRUD_Project.Models;
 using Simple_CRUD_Project.Services;
@@ -18,6 +19,14 @@ builder.Services.AddScoped<IFileUpload, FileUpload>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "My API", Version = "v1" });
+});
+
+builder.Services.AddDbContext<MainDBContext>(options =>
+{
+options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+ .EnableSensitiveDataLogging()
+ .LogTo(Console.WriteLine, LogLevel.Information);
+
 });
 
 var app = builder.Build();

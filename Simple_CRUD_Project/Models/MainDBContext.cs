@@ -1,17 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Simple_CRUD_Project.Common.Entities;
 
 namespace Simple_CRUD_Project.Models
 {
     public class MainDBContext : DbContext
     {
-        public IConfiguration Configuration { get; set; }
+        private readonly IConfiguration _configuration;
 
         public MainDBContext()
         {
-            var builder = new ConfigurationBuilder()
-          .SetBasePath(Directory.GetCurrentDirectory())
-          .AddJsonFile("appsettings.json");
-            Configuration = builder.Build();
+
+        }
+
+        public MainDBContext(DbContextOptions<MainDBContext> options, IConfiguration configuration)
+    : base(options)
+        {
+            _configuration = configuration;
         }
 
         public virtual DbSet<TblComment> TblComments { get; set; }
@@ -26,7 +31,7 @@ namespace Simple_CRUD_Project.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                optionsBuilder.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"));
             }
         }
 
@@ -119,6 +124,57 @@ namespace Simple_CRUD_Project.Models
                     .HasColumnName("uploaded_at");
             });
 
+            base.OnModelCreating(modelBuilder);
+
+            // Apply configurations for all entities inheriting from BaseEntity
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
+                {
+                    modelBuilder.Entity(entityType.ClrType).Property<DateTime?>("CreatedAt")
+                        .HasDefaultValueSql("GETUTCDATE()")
+                        .ValueGeneratedOnAdd(); // Optional, depending on how you want to generate the default value
+
+                    modelBuilder.Entity(entityType.ClrType).Property<DateTime?>("UpdatedAt")
+                        .HasDefaultValueSql("GETUTCDATE()")
+                        .ValueGeneratedOnAddOrUpdate(); // Optional, depending on how you want to generate the default value
+                }
+            }
+
+        }
+
+        public override int SaveChanges()
+        {
+            UpdateTimestamps();
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            UpdateTimestamps();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void UpdateTimestamps()
+        {
+            var entries = ChangeTracker.Entries()
+                .Where(e => e.Entity is BaseEntity && (e.State == EntityState.Added || e.State == EntityState.Modified));
+
+            foreach (var entry in entries)
+            {
+                var now = DateTime.UtcNow;
+                //((BaseEntity)entry.Entity).UpdatedAt = now;
+
+                if (entry.State == EntityState.Added)
+                {
+                    ((BaseEntity)entry.Entity).CreatedAt = now;
+                }
+
+                else if (entry.State == EntityState.Modified)
+                {
+                    ((BaseEntity)entry.Entity).UpdatedAt = now;
+                }
+            }
         }
     }
 }
